@@ -1,0 +1,57 @@
+.dock {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 24px;
+}
+
+.item {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Fallback radius */
+  border-radius: 18px;
+  overflow: hidden;
+
+  /* iOS squircle mask (reliable) */
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 99%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(circle at 50% 50%, #000 99%, transparent 100%);
+
+  /* Smooth corners like Apple */
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+/* Smaller icon inside */
+.item img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* Hover animation */
+.item:hover {
+  transform: scale(1.25) translateY(-7px);
+}
+
+.add {
+  font-size: 22px;
+  font-weight: 600;
+}

@@ -1,0 +1,95 @@
+import { useEffect, useState } from "react";
+import { useUIStore } from "@/store/uiStore";
+import ControlCenter from "@/components/control-center/ControlCenter";
+import Dock from "@/components/dock/Dock";
+import TimeSearch from "@/components/time-search/TimeSearch";
+import DateTimeChip from "@/components/topbar/DateTimeChip";
+import UnsplashSettingsWindow from "@/components/control-center/UnsplashSettingsWindow";
+import { fetchUnsplashWallpaper } from "@/lib/unsplashClient";
+import { SlidersHorizontal } from "lucide-react";
+
+export default function NewTab() {
+  const { toggleControlCenter, unsplashOpen, closeUnsplash, wallpaper, setWallpaper } = useUIStore();
+
+    const [unsplashPrefs, setUnsplashPrefs] = useState({
+    topic: "Nature",
+    refresh: "daily",
+  });
+
+  useEffect(() => {
+    async function load() {
+      try {
+        if (!navigator.onLine) {
+          console.log("Offline: Unsplash disabled");
+          return;
+        }
+
+        const data = await fetchUnsplashWallpaper({
+          topic: unsplashPrefs.topic,
+          w: 2400,
+          h: 1600,
+          q: 80,
+        });
+
+        setWallpaper(data.imageUrl);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    load();
+  }, [unsplashPrefs.topic, setWallpaper]);
+  
+  return (
+    <div className="relative min-h-screen w-full overflow-hidden text-white">
+      {/* Wallpaper / Background */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url(${wallpaper})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+
+      {/* Dark overlay for readability */}
+      {/* <div className="absolute inset-0 bg-black/10" /> */}
+
+      {/* Top Bar */}
+      <header className="relative z-10 flex items-center justify-end px-6 py-4">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggleControlCenter}
+            className="glass rounded-full w-11 h-11 flex items-center justify-center hover:bg-white/10 transition"
+            aria-label="Control Center"
+          >
+            <SlidersHorizontal size={18} />
+          </button>
+
+          <DateTimeChip />
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="relative z-10 flex flex-col items-center px-6">
+        <TimeSearch />
+      </main>
+
+      {/* Control Center Panel */}
+      <ControlCenter />
+
+      {/* Dock */}
+      <Dock />
+        <UnsplashSettingsWindow
+        open={unsplashOpen}
+        onClose={closeUnsplash}
+        initialTopic={unsplashPrefs.topic}
+        initialRefresh={unsplashPrefs.refresh}
+        onApply={(prefs) => {
+          setUnsplashPrefs(prefs);
+          closeUnsplash();
+        }}
+      />
+    </div>
+  );
+}
