@@ -33,10 +33,19 @@ export default function UnsplashSettingsWindow({
   initialTopic = "Nature",
   initialRefresh = "daily",
 }) {
-  const [topic, setTopic] = useState(initialTopic);
-  const [refresh, setRefresh] = useState(initialRefresh);
+  // Load saved values from localStorage if they exist
+  const savedTopic = typeof window !== "undefined" ? localStorage.getItem("unsplashTopic") : null;
+  const savedRefresh = typeof window !== "undefined" ? localStorage.getItem("unsplashRefresh") : null;
+
+  const [topic, setTopic] = useState(
+    typeof window !== "undefined" ? localStorage.getItem("unsplashTopic") || initialTopic : initialTopic
+  );
+  const [refresh, setRefresh] = useState(
+    typeof window !== "undefined" ? localStorage.getItem("unsplashRefresh") || initialRefresh : initialRefresh
+  );
   const [online, setOnline] = useState(typeof navigator !== "undefined" ? navigator.onLine : true);
 
+  // Keep track of online/offline
   useEffect(() => {
     const on = () => setOnline(true);
     const off = () => setOnline(false);
@@ -48,12 +57,23 @@ export default function UnsplashSettingsWindow({
     };
   }, []);
 
+  // Reset topic & refresh when window opens
   useEffect(() => {
     if (open) {
-      setTopic(initialTopic);
-      setRefresh(initialRefresh);
+      // Only reset if no topic in state (first open)
+      setTopic(prev => prev || savedTopic || initialTopic);
+      setRefresh(prev => prev || savedRefresh || initialRefresh);
     }
-  }, [open, initialTopic, initialRefresh]);
+  }, [open, initialTopic, initialRefresh, savedTopic, savedRefresh]);
+
+
+  // Save to localStorage whenever user changes topic or refresh
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("unsplashTopic", topic);
+      localStorage.setItem("unsplashRefresh", refresh);
+    }
+  }, [topic, refresh]);
 
   const refreshLabel = useMemo(
     () => REFRESH_OPTIONS.find((r) => r.value === refresh)?.label ?? "Daily",
