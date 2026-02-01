@@ -1,141 +1,132 @@
-import {Agent, setGlobalDispatcher} from "undici"
+import { Agent, setGlobalDispatcher } from "undici";
 
-// ✅ Fix ECONNRESET in serverless by disabling keep-alive socket reuse
 setGlobalDispatcher(
   new Agent({
     keepAliveTimeout: 1,
     keepAliveMaxTimeout: 1,
-  }),
-)
+  })
+);
 
-function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms))
+/* -------------------- CONFIG -------------------- */
+
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
+const RATE_LIMIT_MAX = 15; // max requests per IP per hour
+
+const VALID_TOPICS = new Set([
+  "animals",
+  "architecture-interior",
+  "business-work",
+  "current-events",
+  "experimental",
+  "film",
+  "food-drink",
+  "health",
+  "nature",
+  "people",
+  "spirituality",
+  "technology",
+  "textures",
+  "travel",
+  "wallpapers",
+]);
+
+const ipStore = new Map();
+
+/* -------------------- HELPERS -------------------- */
+
+function rateLimit(ip) {
+  const now = Date.now();
+  const record = ipStore.get(ip) || { count: 0, time: now };
+
+  if (now - record.time > RATE_LIMIT_WINDOW) {
+    record.count = 0;
+    record.time = now;
+  }
+
+  record.count += 1;
+  ipStore.set(ip, record);
+
+  return record.count <= RATE_LIMIT_MAX;
 }
 
-async function fetchWithRetry(url, options, retries = 4) {
+async function fetchWithRetry(url, options, retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {
-      const controller = new AbortController()
-      const timeout = setTimeout(() => controller.abort(), 15000) // 15s
-
-      const r = await fetch(url, {
-        ...options,
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeout)
-      return r
-    } catch (err) {
-      const code = err?.cause?.code
-
-      console.error("fetch attempt failed", {
-        attempt: i + 1,
-        url,
-        message: err?.message,
-        name: err?.name,
-        code,
-        cause: err?.cause,
-      })
-
-      // retry only for network-type errors
-      const retryable = ["ECONNRESET", "ETIMEDOUT", "EAI_AGAIN", "ENOTFOUND"]
-      if (!retryable.includes(code)) throw err
-
-      if (i === retries - 1) throw err
-
-      // exponential backoff + jitter
-      const base = 700 * 2 ** i
-      const jitter = Math.floor(Math.random() * 250)
-      await sleep(base + jitter)
+      return await fetch(url, options);
+    } catch (e) {
+      if (i === retries - 1) throw e;
+      await new Promise(r => setTimeout(r, 500 * 2 ** i));
     }
   }
 }
 
-export const config = {runtime: "nodejs"} // ✅ important for Next.js pages/api
+export const config = { runtime: "nodejs" };
+
+/* -------------------- HANDLER -------------------- */
 
 export default async function handler(req, res) {
-  debugger
   try {
-    const topic = (req.query.topic || "nature").toString()
-    const page = parseInt(req.query.page || "1", 10)
-    const perPage = Math.min(parseInt(req.query.per_page || "30", 10), 30)
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0] ||
+      req.socket.remoteAddress ||
+      "unknown";
 
-    const w = parseInt(req.query.w || "2400", 10)
-    const h = parseInt(req.query.h || "1600", 10)
-    const q = parseInt(req.query.q || "80", 10)
-
-    // ⚠️ TEMP ONLY — regenerate this key if exposed publicly
-    const accessKey = "2Gg8E0uAsZaezTwITe22DPn0WfDz_GQYRrj4iEgZ7mo"
-
-    if (!accessKey) {
-      return res.status(500).json({error: "Missing UNSPLASH_ACCESS_KEY"})
+    if (!rateLimit(ip)) {
+      return res.status(429).json({
+        error: "Rate limit exceeded",
+        retryAfter: "1 hour",
+      });
     }
 
-    const url = new URL("https://api.unsplash.com/search/photos")
-    url.searchParams.set("query", topic)
-    url.searchParams.set("page", String(page))
-    url.searchParams.set("per_page", String(perPage))
-    url.searchParams.set("orientation", "landscape")
-    url.searchParams.set("content_filter", "high")
+    let topic = (req.query.topic || "nature").toLowerCase();
+
+    // ✅ Topic auto-fallback
+    if (!VALID_TOPICS.has(topic)) {
+      topic = "nature";
+    }
+
+    const perPage = 5;
+    const accessKey = process.env.UNSPLASH_ACCESS_KEY;
+    // const accessKey = process.env.UNSPLASH_ACCESS_KEY;
+    if (!accessKey) {
+      return res.status(500).json({ error: "Missing UNSPLASH_ACCESS_KEY" });
+    }
+
+    const url = new URL(
+      `https://api.unsplash.com/topics/${topic}/photos`
+    );
+    url.searchParams.set("per_page", perPage);
+    url.searchParams.set("orientation", "landscape");
 
     const r = await fetchWithRetry(url.toString(), {
+      cache: "no-store",
       headers: {
         Authorization: `Client-ID ${accessKey}`,
-        "Accept-Version": "v1",
         Accept: "application/json",
-        "User-Agent": "my-app (test)", // ✅ important
+        "User-Agent": "newtab-wallpaper",
       },
-    })
+    });
 
     if (!r.ok) {
-      const text = await r.text()
-      return res.status(r.status).json({
-        error: "Unsplash request failed",
-        status: r.status,
-        details: text,
-      })
+      return res.status(r.status).json({ error: "Unsplash failed" });
     }
 
-    const data = await r.json()
-    const results = data?.results || []
+    const photos = await r.json();
 
-    if (!results.length) {
-      return res.status(404).json({error: "No photos found"})
-    }
-
-    // pick random photo
-    const photo = results[Math.floor(Math.random() * results.length)]
-
-    const raw = photo?.urls?.raw
-    if (!raw) {
-      return res.status(500).json({
-        error: "Invalid Unsplash response: no raw url",
-      })
-    }
-
-    // ✅ safer way to append params
-    const image = new URL(raw)
-    image.searchParams.set("w", String(w))
-    image.searchParams.set("h", String(h))
-    image.searchParams.set("q", String(q))
-    image.searchParams.set("fit", "crop")
-    image.searchParams.set("auto", "format")
-
-    return res.status(200).json({
-      id: photo.id,
-      topic,
-      imageUrl: image.toString(),
-      author: photo.user?.name || "",
-      authorUrl: photo.user?.links?.html || "",
-      unsplashUrl: photo.links?.html || "",
-    })
-  } catch (err) {
-    console.error("handler error", err, err?.cause)
-
-    return res.status(500).json({
-      error: "Server error",
-      message: err?.message || String(err),
-      cause: err?.cause ? String(err.cause) : undefined,
-    })
+    const cleaned = photos
+      .map((p) => ({
+        id: p.id,
+        imageUrl: p?.urls?.full,
+        blurHash: p?.blur_hash,
+      }))
+      .filter(p => p.imageUrl);
+      res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+      res.setHeader("Pragma", "no-cache");
+      res.setHeader("Expires", "0");
+      
+    return res.status(200).json(cleaned);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: "Server error" });
   }
 }

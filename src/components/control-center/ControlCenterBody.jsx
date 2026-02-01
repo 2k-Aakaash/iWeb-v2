@@ -13,7 +13,7 @@ import {
   SkipBack,
   SkipForward,
 } from "lucide-react";
-
+import { getStoredImages } from "@/lib/indexedDb";
 import styles from "./control-center.module.css";
 import { useUIStore } from "@/store/uiStore";
 
@@ -31,7 +31,7 @@ function ToggleButton({ active, icon: Icon, onClick }) {
 
 export default function ControlCenterBody() {
   const { setWallpaper } = useUIStore();
-const { openUnsplash } = useUIStore();
+  const { openUnsplash } = useUIStore();
 
   const [toggles, setToggles] = useState({
     night: false,
@@ -53,9 +53,9 @@ const { openUnsplash } = useUIStore();
   const [unsplashOpen, setUnsplashOpen] = useState(false);
 
   const [unsplashPrefs, setUnsplashPrefs] = useState({
-  topic: "Nature",
-  refresh: "daily",
-});
+    topic: "Nature",
+    refresh: "daily",
+  });
 
   useEffect(() => {
     if (!("mediaSession" in navigator)) return;
@@ -95,16 +95,14 @@ const { openUnsplash } = useUIStore();
     );
   };
 
-  const wallpapers = [
-    "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?q=80&w=2400&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2400&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2400&auto=format&fit=crop",
-  ];
+  const changeWallpaper = async () => {
+    const images = await getStoredImages();
+    if (!images.length) return;
 
-  const changeWallpaper = () => {
-    const random = wallpapers[Math.floor(Math.random() * wallpapers.length)];
-    setWallpaper(random);
+    const next = images[Math.floor(Math.random() * images.length)];
+    setWallpaper(next);
   };
+
 
   return (
     <div className={styles.inner}>
@@ -122,11 +120,11 @@ const { openUnsplash } = useUIStore();
             icon={Bluetooth}
             onClick={() => setToggles((t) => ({ ...t, bluetooth: !t.bluetooth }))}
           />
-        <ToggleButton
+          <ToggleButton
             active={false}
             icon={Volume2}
             onClick={openUnsplash}
-        />
+          />
         </div>
 
         {/* Column 2 */}
@@ -186,9 +184,9 @@ const { openUnsplash } = useUIStore();
           </div>
 
           {/* Row 2 = Horizontal pill */}
-      <button className={styles.bigPill} type="button">
-        <Moon size={20} />
-      </button>
+          <button className={styles.bigPill} type="button">
+            <Moon size={20} />
+          </button>
         </div>
       </div>
 
@@ -199,5 +197,5 @@ const { openUnsplash } = useUIStore();
       </button>
     </div>
   );
-  
+
 }

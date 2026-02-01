@@ -11,35 +11,27 @@ import { SlidersHorizontal } from "lucide-react";
 export default function NewTab() {
   const { toggleControlCenter, unsplashOpen, closeUnsplash, wallpaper, setWallpaper } = useUIStore();
 
-    const [unsplashPrefs, setUnsplashPrefs] = useState({
+  const [unsplashPrefs, setUnsplashPrefs] = useState({
     topic: "Nature",
     refresh: "daily",
   });
 
   useEffect(() => {
     async function load() {
-      try {
-        if (!navigator.onLine) {
-          console.log("Offline: Unsplash disabled");
-          return;
-        }
+      if (!navigator.onLine) return;
 
-        const data = await fetchUnsplashWallpaper({
-          topic: unsplashPrefs.topic,
-          w: 2400,
-          h: 1600,
-          q: 80,
-        });
+      await fetchUnsplashWallpaper({
+        topic: unsplashPrefs.topic,
+        refresh: unsplashPrefs.refresh,
+      });
 
-        setWallpaper(data.imageUrl);
-      } catch (e) {
-        console.error(e);
-      }
+      const images = await getStoredImages();
+      if (images.length) setWallpaper(images[0]);
     }
 
     load();
-  }, [unsplashPrefs.topic, setWallpaper]);
-  
+  }, [unsplashPrefs.topic, unsplashPrefs.refresh]);
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white">
       {/* Wallpaper / Background */}
@@ -80,7 +72,7 @@ export default function NewTab() {
 
       {/* Dock */}
       <Dock />
-        <UnsplashSettingsWindow
+      <UnsplashSettingsWindow
         open={unsplashOpen}
         onClose={closeUnsplash}
         initialTopic={unsplashPrefs.topic}

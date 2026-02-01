@@ -34,8 +34,8 @@ export default function TimeSearch() {
     const finalUrl = query.startsWith("http")
       ? query
       : isUrl
-      ? `https://${query}`
-      : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        ? `https://${query}`
+        : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
 
     window.location.href = finalUrl;
   };
@@ -43,10 +43,10 @@ export default function TimeSearch() {
   return (
     <div className={styles.wrapper}>
       {/* Big Time */}
-        <div className={styles.time} data-time={timeText}>
+      <div className={styles.time} data-time={timeText}>
         {timeText}
-        </div>
-        
+      </div>
+
       {/* Search */}
       <form className={`${styles.search} glass`} onSubmit={onSubmit}>
         <Search size={20} className={styles.icon} />
