@@ -11,7 +11,7 @@ export default function ControlCenter() {
     <AnimatePresence>
       {controlCenterOpen && (
         <>
-          <div className={styles.overlay} onClick={closeControlCenter} />
+          <div className={styles.ccOverlay} onClick={closeControlCenter} />
 
           <motion.div
             className={styles.glassPanel}

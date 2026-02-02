@@ -17,14 +17,14 @@ import { getStoredImages } from "@/lib/indexedDb";
 import styles from "./control-center.module.css";
 import { useUIStore } from "@/store/uiStore";
 
-function ToggleButton({ active, icon: Icon, onClick }) {
+function ToggleButton({ active, icon: Icon, onClick, iconSize = 22 }) {
   return (
     <button
       onClick={onClick}
       className={`${styles.ccBtn} ${styles.liquidBtn} ${active ? styles.active : ""}`}
       type="button"
     >
-      <Icon size={18} />
+      <Icon size={iconSize} />
     </button>
   );
 }
@@ -145,7 +145,7 @@ export default function ControlCenterBody() {
             type="button"
             title="Change wallpaper"
           >
-            <Image size={18} />
+            <Image size={22} />
           </button>
         </div>
 
@@ -185,14 +185,14 @@ export default function ControlCenterBody() {
 
           {/* Row 2 = Horizontal pill */}
           <button className={`${styles.bigPill} ${styles.liquidBtn}`} type="button">
-            <Moon size={20} />
+            <Moon size={22} />
           </button>
         </div>
       </div>
 
       {/* Full width settings */}
       <button className={`${styles.settings} ${styles.liquidBtn}`} type="button">
-        <Settings size={20} />
+        <Settings size={22} />
         Settings
       </button>
     </div>

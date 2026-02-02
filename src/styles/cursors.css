@@ -1,0 +1,86 @@
+/* Base cursor everywhere */
+html,
+body {
+  cursor: url("/cursors/default.cur"), default;
+}
+
+/* Links / buttons */
+a,
+button,
+[role="button"],
+.cursor-pointer {
+  cursor: url("/cursors/pointer.cur"), pointer;
+}
+
+/* Text typing */
+input,
+textarea,
+select,
+[contenteditable="true"] {
+  cursor: url("/cursors/text.cur"), text;
+}
+
+/* Loading (force everywhere, overrides all above) */
+body.loading,
+body.loading *,
+body.loading *::before,
+body.loading *::after {
+  cursor: url("/cursors/wait.ani"), wait !important;
+}
+
+/* Optional: allow manual wait cursor class too */
+.cursor-wait {
+  cursor: url("/cursors/wait.ani"), wait !important;
+}
+
+/* Progress (loading but usable) */
+.cursor-progress {
+  cursor: url("/cursors/progress.ani"), progress;
+}
+
+/* Move */
+.cursor-move {
+  cursor: url("/cursors/move.cur"), move;
+}
+
+/* Resize */
+.cursor-ew {
+  cursor: url("/cursors/ew-resize.cur"), ew-resize;
+}
+.cursor-ns {
+  cursor: url("/cursors/ns-resize.cur"), ns-resize;
+}
+.cursor-nwse {
+  cursor: url("/cursors/nwse-resize.cur"), nwse-resize;
+}
+.cursor-nesw {
+  cursor: url("/cursors/nesw-resize.cur"), nesw-resize;
+}
+
+/* Not allowed */
+.disabled,
+[disabled],
+.cursor-not-allowed {
+  cursor: url("/cursors/not-allowed.cur"), not-allowed;
+}
+
+/* Help */
+.cursor-help {
+  cursor: url("/cursors/help.cur"), help;
+}
+
+/* Grab / dragging */
+.cursor-grab {
+  cursor: url("/cursors/grab.cur"), grab;
+}
+.cursor-grabbing {
+  cursor: url("/cursors/grabbing.cur"), grabbing;
+}
+
+/* Zoom */
+.cursor-zoom-in {
+  cursor: url("/cursors/zoom-in.cur"), zoom-in;
+}
+.cursor-zoom-out {
+  cursor: url("/cursors/zoom-out.cur"), zoom-out;
+}

@@ -95,7 +95,7 @@ export default function NewTab() {
           <feDisplacementMap
             in="SourceGraphic"
             in2="turbulence"
-            scale="70"
+            scale="50"
             xChannelSelector="R"
             yChannelSelector="G"
           />

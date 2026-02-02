@@ -1,9 +1,13 @@
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 50;
   display: grid;
   place-items: center;
+
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .window {
@@ -11,13 +15,41 @@
   border-radius: 26px;
   padding: 14px;
 
-  background: rgba(20, 20, 24, 0.55);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  /* liquid glass look */
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.18);
 
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: brightness(1.1) blur(10px) url(#displacementFilter);
+  -webkit-backdrop-filter: brightness(1.1) blur(10px) url(#displacementFilter);
 
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: paint;
+}
+
+.window::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  box-shadow:
+    inset 6px 6px 0px -6px rgba(255, 255, 255, 0.55),
+    inset 0 0 18px 2px rgba(255, 255, 255, 0.25);
+}
+
+.window > * {
+  position: relative;
+  z-index: 1;
 }
 
 .header {
@@ -26,7 +58,8 @@
   justify-content: space-between;
   gap: 12px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .headerLeft {
@@ -155,4 +188,184 @@
   background: rgba(255, 70, 70, 0.12);
   border: 1px solid rgba(255, 70, 70, 0.22);
   color: rgba(255, 255, 255, 0.95);
+}
+
+/* ============================
+   LIQUID GLASS SELECT
+============================ */
+
+/* Trigger (the closed select button) */
+.selectTrigger {
+  height: 42px;
+  border-radius: 16px;
+  padding: 0 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.95);
+
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
+  -webkit-backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
+
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: paint;
+}
+
+/* sheen highlight like your liquidBtn */
+.selectTrigger::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  box-shadow:
+    inset 6px 6px 0px -6px rgba(255, 255, 255, 0.7),
+    inset 0 0 8px 1px rgba(255, 255, 255, 0.7);
+}
+
+.selectTrigger > * {
+  position: relative;
+  z-index: 1;
+}
+
+.selectTrigger:hover {
+  transform: scale(1.02) translateZ(0);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.selectTrigger[data-state="open"] {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* Dropdown content (the popup) */
+.selectContent {
+  border-radius: 18px;
+  overflow: hidden;
+  isolation: isolate;
+  position: relative;
+
+  padding: 6px;
+
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+
+  backdrop-filter: brightness(1.1) blur(6px) url(#displacementFilter);
+  -webkit-backdrop-filter: brightness(1.1) blur(6px) url(#displacementFilter);
+
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+
+  animation: selectPop 160ms ease;
+}
+
+/* glossy overlay */
+.selectContent::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  box-shadow:
+    inset 6px 6px 0px -6px rgba(255, 255, 255, 0.55),
+    inset 0 0 14px 2px rgba(255, 255, 255, 0.35);
+}
+
+.selectContent > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes selectPop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Items */
+.selectItem {
+  border-radius: 14px;
+  padding: 10px 12px;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  color: rgba(255, 255, 255, 0.92);
+  transition:
+    transform 150ms ease,
+    background 150ms ease;
+}
+
+/* hover */
+.selectItem[data-highlighted] {
+  outline: none;
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateX(2px);
+}
+
+/* selected */
+.selectItem[data-state="checked"] {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.liquidGlass {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  backdrop-filter: brightness(1.1) blur(10px) url(#displacementFilter);
+  -webkit-backdrop-filter: brightness(1.1) blur(10px) url(#displacementFilter);
+
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: paint;
+}
+
+.liquidGlass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  box-shadow:
+    inset 6px 6px 0px -6px rgba(255, 255, 255, 0.55),
+    inset 0 0 18px 2px rgba(255, 255, 255, 0.25);
+}
+
+.liquidGlass > * {
+  position: relative;
+  z-index: 1;
 }

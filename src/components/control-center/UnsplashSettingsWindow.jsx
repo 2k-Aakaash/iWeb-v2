@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { X, WifiOff, RefreshCcw, Settings2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import styles from "./unsplash-settings-window.module.css";
 
 const REFRESH_OPTIONS = [
@@ -83,9 +90,13 @@ export default function UnsplashSettingsWindow({
   if (!open) return null;
 
   return (
-    <div className={styles.overlay} onMouseDown={onClose}>
       <div
-        className={styles.window}
+        className={styles.overlay}
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+      <div className={`${styles.window} ${styles.liquidGlass}`}
         onMouseDown={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -123,32 +134,36 @@ export default function UnsplashSettingsWindow({
 
                 <div className={styles.field}>
                   <label className={styles.label}>Topic</label>
-                  <select
-                    className={styles.select}
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                  >
-                    {TOPICS.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
+                  <Select value={topic} onValueChange={setTopic}>
+                    <SelectTrigger className={styles.selectTrigger}>
+                      <SelectValue placeholder="Select topic" />
+                    </SelectTrigger>
+
+                    <SelectContent position="popper" className={styles.selectContent}>
+                      {TOPICS.map((t) => (
+                        <SelectItem key={t} value={t} className={styles.selectItem}>
+                          {t}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className={styles.field}>
                   <label className={styles.label}>Refresh frequency</label>
-                  <select
-                    className={styles.select}
-                    value={refresh}
-                    onChange={(e) => setRefresh(e.target.value)}
-                  >
-                    {REFRESH_OPTIONS.map((r) => (
-                      <option key={r.value} value={r.value}>
-                        {r.label}
-                      </option>
-                    ))}
-                  </select>
+                  <Select value={refresh} onValueChange={setRefresh}>
+                    <SelectTrigger className={styles.selectTrigger}>
+                      <SelectValue placeholder="Select refresh frequency" />
+                    </SelectTrigger>
+
+                    <SelectContent position="popper" className={styles.selectContent}>
+                      {REFRESH_OPTIONS.map((r) => (
+                        <SelectItem key={r.value} value={r.value} className={styles.selectItem}>
+                          {r.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
