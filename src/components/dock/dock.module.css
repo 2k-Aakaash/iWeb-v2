@@ -1,57 +1,135 @@
 .dock {
   position: fixed;
-  bottom: 16px;
   left: 50%;
+  bottom: 16px;
   transform: translateX(-50%);
-  display: flex;
-  gap: 12px;
-  padding: 12px 16px;
   border-radius: 24px;
+  padding: 10px 20px;
+
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.15)
+  );
+  box-shadow: rgba(255, 255, 255, 0.17) 0px 0px 0px 1px inset;
+
+  z-index: 9999;
 }
 
-.item {
-  width: 48px;
-  height: 48px;
+.list {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
 
+.app {
+  width: 60px;
+  height: 60px;
+  position: relative;
+
+  transition: width, height, margin-top;
+  transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  transition-duration: 100ms;
+}
+
+.link {
+  margin-top: 4px;
+  width: 80%;
+  height: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-
-  /* Fallback radius */
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
-
-  /* iOS squircle mask (reliable) */
-  -webkit-mask-image: radial-gradient(
-    circle at 50% 50%,
-    #000 99%,
-    transparent 100%
-  );
-  mask-image: radial-gradient(circle at 50% 50%, #000 99%, transparent 100%);
-
-  /* Smooth corners like Apple */
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
+  color: #fff;
 }
 
-/* Smaller icon inside */
-.item img {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
+.app img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
   user-select: none;
   pointer-events: none;
   -webkit-user-drag: none;
+  image-rendering: auto;
 }
 
-/* Hover animation */
-.item:hover {
-  transform: scale(1.25) translateY(-7px);
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  top: -44px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: ease-in opacity 100ms;
+
+  background: rgba(0, 0, 0, 0.58);
+  padding: 8px 10px;
+  border-radius: 12px;
+  height: 29px;
+  width: auto;
+  box-shadow: rgba(0, 0, 0, 0.17) 0px 12px 8px 1px;
+  white-space: nowrap;
+  font-size: 13px;
+  line-height: 12px;
 }
 
+.app:hover .tooltip,
+.app:focus-within .tooltip {
+  opacity: 1;
+}
+
+/* Main hover magnification */
+.app:hover {
+  width: 90px;
+  height: 90px;
+  margin-top: -30px;
+}
+
+/* Right side scaling */
+.app:hover + .app {
+  width: calc(80px + var(--dock-offset-right, 0px));
+  height: calc(80px + var(--dock-offset-right, 0px));
+  margin-top: calc(-20px + var(--dock-offset-right, 0px) * -1);
+}
+
+.app:hover + .app + .app {
+  width: calc(70px + var(--dock-offset-right, 0px));
+  height: calc(70px + var(--dock-offset-right, 0px));
+  margin-top: calc(-10px + var(--dock-offset-right, 0px) * -1);
+}
+
+/* Left side scaling (requires :has support) */
+.app:has(+ .app:hover) {
+  width: calc(80px + var(--dock-offset-left, 0px));
+  height: calc(80px + var(--dock-offset-left, 0px));
+  margin-top: calc(-20px + var(--dock-offset-left, 0px) * -1);
+}
+
+.app:has(+ .app + .app:hover) {
+  width: calc(70px + var(--dock-offset-left, 0px));
+  height: calc(70px + var(--dock-offset-left, 0px));
+  margin-top: calc(-10px + var(--dock-offset-left, 0px) * -1);
+}
+
+/* Add button */
 .add {
-  font-size: 22px;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.addBtn {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: transparent;
+  color: white;
+  font-size: 26px;
+  font-weight: 700;
+  cursor: pointer;
 }

@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import styles from "./dock.module.css";
 
 const apps = [
@@ -19,34 +20,74 @@ const apps = [
   { name: "Dropbox", url: "https://dropbox.com", domain: "dropbox.com" },
 ];
 
-export default function Dock() {
-  return (
-    <div className={`${styles.dock} glass`}>
-      {apps.map((app) => (
-        <a
-          key={app.name}
-          href={app.url}
-          target="_blank"
-          rel="noreferrer"
-          className={styles.item}
-          title={app.name}
-        >
-          <img
-            src={`https://www.google.com/s2/favicons?domain=${app.domain}&sz=64`}
-            alt={app.name}
-            draggable={false}
-          />
-        </a>
-      ))}
+const maxAdditionalSize = 5;
 
-      {/* Add Button */}
-      <button
-        className={`${styles.item} ${styles.add}`}
-        title="Add app"
-        onClick={() => alert("Add app clicked (we can build this next)")}
-      >
-        +
-      </button>
-    </div>
+const scaleValue = (value, from, to) => {
+  const scale = (to[1] - to[0]) / (from[1] - from[0]);
+  const capped = Math.min(from[1], Math.max(from[0], value)) - from[0];
+  return Math.floor(capped * scale + to[0]);
+};
+
+export default function Dock() {
+  const dockRef = useRef(null);
+
+  const handleAppHover = (ev) => {
+    if (!dockRef.current) return;
+
+    const mousePosition = ev.clientX;
+    const rect = ev.currentTarget.getBoundingClientRect();
+    const cursorDistance = (mousePosition - rect.left) / rect.width;
+
+    const offsetPixels = scaleValue(
+      cursorDistance,
+      [0, 1],
+      [maxAdditionalSize * -1, maxAdditionalSize]
+    );
+
+    dockRef.current.style.setProperty("--dock-offset-left", `${offsetPixels * -1}px`);
+    dockRef.current.style.setProperty("--dock-offset-right", `${offsetPixels}px`);
+  };
+
+  return (
+    <nav ref={dockRef} className={`${styles.dock} glass`}>
+      <ul className={styles.list}>
+        {apps.map((app) => (
+          <li
+            key={app.name}
+            className={styles.app}
+            onMouseMove={handleAppHover}
+          >
+            <a
+              href={app.url}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.link}
+              title={app.name}
+            >
+              <img
+                src={`https://www.google.com/s2/favicons?sz=256&domain_url=https://${app.domain}`}
+                onError={(e) => (e.currentTarget.src = "/icons/default.png")}
+                alt={app.name}
+                draggable={false}
+              />
+              <span className={styles.tooltip}>{app.name}</span>
+            </a>
+          </li>
+        ))}
+
+        {/* Add Button */}
+        <li className={`${styles.app} ${styles.add}`} onMouseMove={handleAppHover}>
+          <button
+            type="button"
+            className={styles.addBtn}
+            title="Add app"
+            onClick={() => alert("Add app clicked (we can build this next)")}
+          >
+            +
+            <span className={styles.tooltip}>Add app</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
   );
 }
