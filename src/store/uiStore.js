@@ -10,6 +10,8 @@ export const useUIStore = create((set) => ({
     set((s) => ({controlCenterOpen: !s.controlCenterOpen})),
   closeControlCenter: () => set({controlCenterOpen: false}),
 
-  wallpaper: "https://ik.imagekit.io/026k2i7ys/iWeb-v2-Background.jpg",
+  wallpaper:
+    "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?q=80&w=2400&auto=format&fit=crop",
+  // wallpaper: "https://ik.imagekit.io/026k2i7ys/iWeb-v2-Background.jpg",
   setWallpaper: (url) => set({wallpaper: url}),
 }))

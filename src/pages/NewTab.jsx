@@ -82,6 +82,25 @@ export default function NewTab() {
           closeUnsplash();
         }}
       />
+      
+      {/* ADD THIS HERE (GLOBAL SVG FILTERS) */}
+      <svg width="0" height="0" style={{ position: "absolute" }}>
+        <filter id="displacementFilter">
+          <feTurbulence
+            type="turbulence"
+            baseFrequency="0.01"
+            numOctaves="2"
+            result="turbulence"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="turbulence"
+            scale="70"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
     </div>
   );
 }

@@ -21,7 +21,7 @@ function ToggleButton({ active, icon: Icon, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`${styles.ccBtn} ${active ? styles.active : ""}`}
+      className={`${styles.ccBtn} ${styles.liquidBtn} ${active ? styles.active : ""}`}
       type="button"
     >
       <Icon size={18} />
@@ -140,7 +140,7 @@ export default function ControlCenterBody() {
             onClick={() => setToggles((t) => ({ ...t, focus: !t.focus }))}
           />
           <button
-            className={styles.ccBtn}
+            className={`${styles.ccBtn} ${styles.liquidBtn}`}
             onClick={changeWallpaper}
             type="button"
             title="Change wallpaper"
@@ -152,7 +152,7 @@ export default function ControlCenterBody() {
         {/* Column 3 (2 rows) */}
         <div className={styles.rightCol}>
           {/* Row 1 = Media Square */}
-          <div className={styles.mediaSquare}>
+          <div className={`${styles.mediaSquare} ${styles.liquidBtn}`}>
             <div className={styles.mediaTop}>
               <div className={styles.art}>
                 {media.artwork ? (
@@ -169,29 +169,29 @@ export default function ControlCenterBody() {
             </div>
 
             <div className={styles.mediaControls}>
-              <button onClick={prev} className={styles.mediaBtn} type="button">
+              <button onClick={prev} className={`${styles.mediaBtn} ${styles.liquidBtn}`} type="button">
                 <SkipBack size={16} />
               </button>
 
-              <button onClick={playPause} className={styles.mediaBtn} type="button">
+              <button onClick={playPause} className={`${styles.mediaBtn} ${styles.liquidBtn}`} type="button">
                 {media.playing ? <Pause size={16} /> : <Play size={16} />}
               </button>
 
-              <button onClick={next} className={styles.mediaBtn} type="button">
+              <button onClick={next} className={`${styles.mediaBtn} ${styles.liquidBtn}`} type="button">
                 <SkipForward size={16} />
               </button>
             </div>
           </div>
 
           {/* Row 2 = Horizontal pill */}
-          <button className={styles.bigPill} type="button">
+          <button className={`${styles.bigPill} ${styles.liquidBtn}`} type="button">
             <Moon size={20} />
           </button>
         </div>
       </div>
 
       {/* Full width settings */}
-      <button className={styles.settings} type="button">
+      <button className={`${styles.settings} ${styles.liquidBtn}`} type="button">
         <Settings size={20} />
         Settings
       </button>

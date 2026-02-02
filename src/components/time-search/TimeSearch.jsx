@@ -41,24 +41,26 @@ export default function TimeSearch() {
   };
 
   return (
-    <div className={styles.wrapper}>
-      {/* Big Time */}
+  <div className={styles.wrapper}>
+    {/* Liquid Glass Time */}
+    <div className={`${styles.timeGlass} ${styles.liquidBtn}`}>
       <div className={styles.time} data-time={timeText}>
         {timeText}
       </div>
-
-      {/* Search */}
-      <form className={`${styles.search} glass`} onSubmit={onSubmit}>
-        <Search size={20} className={styles.icon} />
-        <input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          className={styles.input}
-          placeholder="What’s on your mind?"
-          autoComplete="off"
-          spellCheck={false}
-        />
-      </form>
     </div>
-  );
+
+    {/* Search */}
+    <form className={`${styles.search} glass`} onSubmit={onSubmit}>
+      <Search size={20} className={styles.icon} />
+      <input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        className={styles.input}
+        placeholder="What’s on your mind?"
+        autoComplete="off"
+        spellCheck={false}
+      />
+    </form>
+  </div>
+);
 }
