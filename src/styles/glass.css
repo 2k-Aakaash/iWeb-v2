@@ -1,7 +1,7 @@
 .glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(22px) saturate(180%) url(#displacementFilter);
-  -webkit-backdrop-filter: blur(22px) saturate(180%) url(#displacementFilter);
+  backdrop-filter: blur(6px) saturate(180%) url(#displacementFilter);
+  -webkit-backdrop-filter: blur(6px) saturate(180%) url(#displacementFilter);
   border: 1px solid var(--glass-border);
   box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.35),

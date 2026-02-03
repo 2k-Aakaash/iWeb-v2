@@ -4,7 +4,7 @@
 
 /* ===== Apple Glass Variables ===== */
 :root {
-  --glass-bg: rgba(30, 30, 30, 0.55);
+  --glass-bg: rgba(30, 30, 30, 0.145);
   --glass-border: rgba(255, 255, 255, 0.18);
   font-family:
     "SF Pro Display",

@@ -6,6 +6,7 @@ function formatTime(date) {
   return date.toLocaleTimeString([], {
     hour: "numeric",
     minute: "2-digit",
+    hour12: true,
   });
 }
 
@@ -43,7 +44,7 @@ export default function TimeSearch() {
   return (
   <div className={styles.wrapper}>
     {/* Liquid Glass Time */}
-    <div className={`${styles.timeGlass} ${styles.liquidBtn}`}>
+    <div className={styles.timeGlass}>
       <div className={styles.time} data-time={timeText}>
         {timeText}
       </div>

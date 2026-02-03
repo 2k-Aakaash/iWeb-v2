@@ -70,7 +70,7 @@ export default function Dock() {
                 alt={app.name}
                 draggable={false}
               />
-              <span className={styles.tooltip}>{app.name}</span>
+              <span className={`${styles.tooltip} ${styles.liquidBtn}`}>{app.name}</span>
             </a>
           </li>
         ))}
@@ -84,7 +84,7 @@ export default function Dock() {
             onClick={() => alert("Add app clicked (we can build this next)")}
           >
             +
-            <span className={styles.tooltip}>Add app</span>
+            <span className={`${styles.tooltip} ${styles.liquidBtn}`}>Add app</span>
           </button>
         </li>
       </ul>
