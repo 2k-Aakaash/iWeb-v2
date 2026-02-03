@@ -9,7 +9,16 @@ import { fetchUnsplashWallpaper } from "@/lib/unsplashClient";
 import { SlidersHorizontal } from "lucide-react";
 
 export default function NewTab() {
-  const { toggleControlCenter, unsplashOpen, closeUnsplash, wallpaper, setWallpaper } = useUIStore();
+  const {
+    toggleControlCenter,
+    unsplashOpen,
+    closeUnsplash,
+    wallpaper,
+    setWallpaper,
+    brightness,
+  } = useUIStore();
+
+  const wallpaperBrightness = 30 + (brightness / 100) * 70;
 
   const [unsplashPrefs, setUnsplashPrefs] = useState({
     topic: "Nature",
@@ -41,6 +50,8 @@ export default function NewTab() {
           backgroundImage: `url(${wallpaper})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+          filter: `brightness(${wallpaperBrightness}%)`,
+          transition: "filter 120ms ease",
         }}
       />
 

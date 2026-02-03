@@ -6,13 +6,14 @@ import {
   Bluetooth,
   Volume2,
   Image,
-  Music2,
   Settings,
   Play,
   Pause,
   SkipBack,
   SkipForward,
+  SunDim
 } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 import { getStoredImages } from "@/lib/indexedDb";
 import styles from "./control-center.module.css";
 import { useUIStore } from "@/store/uiStore";
@@ -42,6 +43,8 @@ export default function ControlCenterBody() {
     focus: false,
     music: false,
   });
+
+  const { brightness, setBrightness } = useUIStore();
 
   const [media, setMedia] = useState({
     title: "Nothing playing",
@@ -188,6 +191,22 @@ export default function ControlCenterBody() {
             <Moon size={22} />
           </button>
         </div>
+      </div>
+
+       {/* ✅ FULL WIDTH BRIGHTNESS (ABOVE SETTINGS) */}
+      <div className={`${styles.brightnessPill} ${styles.liquidBtn}`}>
+        <SunDim size={18} className={styles.brightnessIcon} />
+
+        <Slider
+          value={[brightness]}
+          onValueChange={(v) => setBrightness(v[0])}
+          min={0}
+          max={100}
+          step={1}
+          className={styles.brightnessSlider}
+        />
+
+        <Sun size={18} className={styles.brightnessIcon} />
       </div>
 
       {/* Full width settings */}

@@ -279,3 +279,99 @@
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.35);
 }
+
+/* Full width brightness pill (same row style as settings) */
+.brightnessPill {
+  height: 60px;
+  width: 100%;
+  border-radius: 999px;
+  background: var(--glass-bg);
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0 16px;
+}
+
+.brightnessIcon {
+  color: rgba(255, 255, 255, 0.88);
+  flex: 0 0 auto;
+}
+
+/* slider area takes remaining space */
+.brightnessSlider {
+  flex: 1;
+}
+
+/* shadcn slider override */
+.brightnessSlider :global([data-slot="slider-track"]) {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.brightnessSlider :global([data-slot="slider-range"]) {
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+}
+
+.brightnessSlider :global([data-slot="slider-thumb"]) {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* THUMB default hidden */
+.brightnessSlider :global([data-slot="slider-thumb"]) {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+  /* hide by default */
+  opacity: 0;
+  transform: scale(0.7);
+  transition:
+    opacity 160ms ease,
+    transform 180ms ease;
+}
+
+/* show thumb on hover */
+.brightnessPill:hover .brightnessSlider :global([data-slot="slider-thumb"]) {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* also show when keyboard focus / dragging */
+.brightnessSlider :global([data-slot="slider-thumb"]:focus-visible),
+.brightnessSlider :global([data-slot="slider-thumb"][data-state="active"]) {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.brightnessSlider :global([data-slot="slider-track"]) {
+  cursor: pointer;
+}
+
+.brightnessSlider :global([data-slot="slider-thumb"]) {
+  cursor: grab;
+}
+
+.brightnessSlider :global([data-slot="slider-thumb"][data-state="active"]) {
+  cursor: grabbing;
+}
