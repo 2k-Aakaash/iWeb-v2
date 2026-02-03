@@ -16,7 +16,7 @@ const REFRESH_OPTIONS = [
 ];
 
 const TOPICS = [
-  "SwitzerLand",
+  "Animals",
   "Architecture & Interiors",
   "Business & Work",
   "Current Events",
