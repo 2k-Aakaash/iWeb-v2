@@ -14,7 +14,7 @@ const RATE_LIMIT_MAX = 15 // max requests per IP per hour
 const PER_PAGE = 5 // photos per request
 
 const VALID_TOPICS = new Set([
-  "switzerland",
+  "animals",
   "architecture-interior",
   "business-work",
   "current-events",
