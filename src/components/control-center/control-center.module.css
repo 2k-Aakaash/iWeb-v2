@@ -66,7 +66,7 @@
 .rightCol {
   display: grid;
   grid-template-rows: 1fr 60px;
-  gap: 8px;
+  gap: 8.5px;
 }
 
 /* --- Buttons --- */
