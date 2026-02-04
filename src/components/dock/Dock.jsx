@@ -18,6 +18,14 @@ const apps = [
   { name: "Discord", url: "https://discord.com/app", domain: "discord.com" },
   { name: "Xbox", url: "https://xbox.com", domain: "xbox.com" },
   { name: "Dropbox", url: "https://dropbox.com", domain: "dropbox.com" },
+  { name: "Meet", url: "https://meet.google.com/zjy-wagt-cay", domain: "meet.google.com" },
+  { name: "Zoho People", url: "https://people.zoho.in/", domain: "people.zoho.in" },
+  { name: "Vercel", url: "https://vercel.com", domain: "vercel.com" },
+  { name: "Netlify", url: "https://netlify.com", domain: "netlify.com" },
+  { name: "Valorant", url: "https://playvalorant.com", domain: "playvalorant.com" },
+  { name: "Epic Games", url: "https://epicgames.com", domain: "epicgames.com" },
+  { name: "Realme", url: "https://realme.com", domain: "realme.com" },
+
 ];
 
 const maxAdditionalSize = 5;
