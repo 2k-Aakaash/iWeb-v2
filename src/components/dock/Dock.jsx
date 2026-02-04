@@ -49,7 +49,7 @@ export default function Dock() {
   };
 
   return (
-    <nav ref={dockRef} className={`${styles.dock} glass`}>
+    <nav ref={dockRef} className={styles.dock}>
       <ul className={styles.list}>
         {apps.map((app) => (
           <li

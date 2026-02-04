@@ -6,17 +6,63 @@
   border-radius: 24px;
   padding: 10px 20px;
 
-  background-image: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0),
-    rgba(255, 255, 255, 0.15)
-  );
-  box-shadow: rgba(255, 255, 255, 0.17) 0px 0px 0px 1px inset;
-
   z-index: 9999;
+
+  /* --- Liquid Glass Base --- */
+  position: fixed;
+  isolation: isolate;
+
+  background: rgba(18, 18, 18, 0.342);
+
+  backdrop-filter: brightness(1.1) blur(6px) saturate(160%)
+    url(#displacementFilter);
+  -webkit-backdrop-filter: brightness(1.1) blur(6px) saturate(160%)
+    url(#displacementFilter);
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  box-shadow:
+    0 18px 55px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateX(-50%) translateZ(0);
 }
 
+/* highlight sheen like your liquidBtn */
+.dock::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+  box-shadow:
+    inset 6px 6px 0px -6px rgba(255, 255, 255, 0.7),
+    inset 0 0 10px 1px rgba(255, 255, 255, 0.45);
+
+  opacity: 0.9;
+}
+
+/* optional: top glass gradient glow */
+.dock::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.8;
+}
+
+/* keep list above */
 .list {
+  position: relative;
+  z-index: 1;
+
   display: flex;
   list-style-type: none;
   padding: 0;

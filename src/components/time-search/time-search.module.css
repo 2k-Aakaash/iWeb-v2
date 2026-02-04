@@ -70,7 +70,6 @@
   opacity: 1;
 }
 
-/* Smaller search pill */
 .search {
   width: min(560px, calc(100% - 56px));
   height: 46px;
@@ -81,21 +80,75 @@
   align-items: center;
   gap: 10px;
 
-  /* background: rgba(40, 40, 40, 0.35); */
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  background: rgba(18, 18, 18, 0.34);
+
+  backdrop-filter: brightness(1.1) blur(6px) saturate(160%)
+    url(#displacementFilter);
+  -webkit-backdrop-filter: brightness(1.1) blur(6px) saturate(160%)
+    url(#displacementFilter);
+
   border: 1px solid rgba(255, 255, 255, 0.18);
+
+  box-shadow:
+    0 18px 55px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
 
   transition:
     transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-    background 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    background 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* same sheen highlight like dock */
+.search::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  box-shadow:
+    inset 6px 6px 0px -6px rgba(255, 255, 255, 0.7),
+    inset 0 0 10px 1px rgba(255, 255, 255, 0.45);
+
+  opacity: 0.9;
+}
+
+/* optional top glow like dock */
+.search::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.02) 55%,
+    rgba(255, 255, 255, 0.02)
+  );
+
+  opacity: 0.75;
+}
+
+/* bring icon + input above glass layers */
+.icon,
+.input {
+  position: relative;
+  z-index: 1;
 }
 
 .search:focus-within {
-  transform: scale(1.01);
-  /* background: rgba(40, 40, 40, 0.45); */
-}
-
-.icon {
-  color: rgba(255, 255, 255, 0.75);
+  transform: scale(1.015);
+  background: rgba(18, 18, 18, 0.42);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .input {
@@ -107,6 +160,9 @@
 
   font-size: 15px;
   color: rgba(255, 255, 255, 0.92);
+
+  position: relative;
+  z-index: 1;
 }
 
 .input::placeholder {

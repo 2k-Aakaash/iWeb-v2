@@ -20,7 +20,7 @@ export default function DateTimeChip() {
   const text = useMemo(() => formatDayDate(now), [now]);
 
   return (
-    <div className="glass rounded-full px-4 py-2 text-sm font-medium text-white/90 select-none">
+    <div className="text-sm font-medium text-white/90 select-none">
       {text}
     </div>
   );

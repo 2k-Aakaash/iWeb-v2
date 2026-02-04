@@ -51,7 +51,7 @@ export default function TimeSearch() {
     </div>
 
     {/* Search */}
-    <form className={`${styles.search} glass`} onSubmit={onSubmit}>
+    <form className={styles.search} onSubmit={onSubmit}>
       <Search size={20} className={styles.icon} />
       <input
         value={value}

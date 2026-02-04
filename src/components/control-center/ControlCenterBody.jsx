@@ -36,7 +36,7 @@ export default function ControlCenterBody() {
 
   const [toggles, setToggles] = useState({
     night: false,
-    wifi: true,
+    wifi: false,
     bluetooth: false,
     unsplash: false,
     mute: false,
